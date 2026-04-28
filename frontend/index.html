@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnify - Learn Anything Your Way</title>
+    <style>
+        /* ===== THEME VARIABLES ===== */
+        [data-theme="dark"] {
+            --bg: #0f0f1a;
+            --card: rgba(255,255,255,0.05);
+            --card-border: rgba(255,255,255,0.1);
+            --text: #ffffff;
+            --text-muted: #888888;
+            --input-bg: rgba(255,255,255,0.08);
+            --input-border: rgba(255,255,255,0.15);
+            --result-bg: rgba(102,126,234,0.1);
+            --result-border: rgba(102,126,234,0.3);
+            --tag-bg: rgba(255,255,255,0.08);
+            --tag-border: rgba(255,255,255,0.15);
+            --nav-bg: rgba(255,255,255,0.05);
+            --toggle-bg: rgba(255,255,255,0.1);
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f2ff;
+            --card: #ffffff;
+            --card-border: #e0e0f0;
+            --text: #1a1a2e;
+            --text-muted: #666666;
+            --input-bg: #f5f5ff;
+            --input-border: #d0d0e8;
+            --result-bg: rgba(102,126,234,0.08);
+            --result-border: rgba(102,126,234,0.3);
+            --tag-bg: #f0f0ff;
+            --tag-border: #d0d0e8;
+            --nav-bg: rgba(255,255,255,0.8);
+            --toggle-bg: #e0e0f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+            transition: background 0.3s, color 0.3s, border 0.3s;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            background: var(--toggle-bg);
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: none;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        .toggle-icon {
+            font-size: 18px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 40px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* ===== MAIN CARD ===== */
+        .main-card {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            padding: 40px;
+            background: var(--card);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        /* ===== INPUT GROUP ===== */
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #667eea;
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-group select option {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* ===== INTEREST TAGS ===== */
+        .interest-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            background: var(--tag-bg);
+            border: 1px solid var(--tag-border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text);
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .tag:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .tag.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: transparent;
+            color: white;
+        }
+
+        /* ===== ROW ===== */
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ===== BUTTON ===== */
+        .explain-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            margin-top: 8px;
+        }
+
+        .explain-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .explain-btn:active {
+            transform: translateY(0px);
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            display: none;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* ===== RESULT BOX ===== */
+        .result-box {
+            margin-top: 32px;
+            padding: 28px;
+            background: var(--result-bg);
+            border-radius: 16px;
+            border: 1px solid var(--result-border);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box h3 {
+            color: #667eea;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .result-box p {
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 16px;
+            white-space: pre-line;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 36px; }
+            .main-card { margin: 0 16px 40px; padding: 24px; }
+            nav { padding: 16px 20px; }
+            .row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">✨ Learnify</div>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span class="toggle-icon" id="toggle-icon">☀️</span>
+            <span id="toggle-text">Light Mode</span>
+        </button>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Learning that speaks<br>your language 🚀</h1>
+        <p>Enter any concept, pick your interest, and watch it come alive in a way that actually makes sense to you.</p>
+    </div>
+
+    <!-- Main Card -->
+    <div class="main-card">
+
+        <!-- Concept Input -->
+        <div class="input-group">
+            <label>What do you want to learn?</label>
+            <input type="text" id="concept" placeholder="e.g. Photosynthesis, Newton's Laws, Algebra...">
+        </div>
+
+        <!-- Interest Tags -->
+        <div class="input-group">
+            <label>Your Interest</label>
+            <div class="interest-tags">
+                <div class="tag" onclick="selectTag(this, 'Cricket')">🏏 Cricket</div>
+                <div class="tag" onclick="selectTag(this, 'Football')">⚽ Football</div>
+                <div class="tag" onclick="selectTag(this, 'Cars')">🚗 Cars</div>
+                <div class="tag" onclick="selectTag(this, 'Gaming')">🎮 Gaming</div>
+                <div class="tag" onclick="selectTag(this, 'Music')">🎵 Music</div>
+                <div class="tag" onclick="selectTag(this, 'Movies')">🎬 Movies</div>
+                <div class="tag" onclick="selectTag(this, 'Cooking')">🍳 Cooking</div>
+                <div class="tag" onclick="selectTag(this, 'Poetry')">📝 Poetry</div>
+                <div class="tag" onclick="selectTag(this, 'Dance')">💃 Dance</div>
+                <div class="tag" onclick="selectTag(this, 'Art')">🎨 Art</div>
+            </div>
+        </div>
+
+        <!-- Language and Level -->
+        <div class="row">
+            <div class="input-group">
+                <label>Language</label>
+                <select id="language">
+                    <option value="English">🇬🇧 English</option>
+                    <option value="Hindi">🇮🇳 Hindi</option>
+                    <option value="Gujarati">Gujarati</option>
+                    <option value="Spanish">🇪🇸 Spanish</option>
+                    <option value="French">🇫🇷 French</option>
+                    <option value="Arabic">🇸🇦 Arabic</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Level</label>
+                <select id="level">
+                    <option value="a 5 year old">🧒 Super Simple</option>
+                    <option value="a school student">📚 School Level</option>
+                    <option value="a college student">🎓 College Level</option>
+                    <option value="an expert">🔬 Expert Level</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Button -->
+        <button class="explain-btn" onclick="explainConcept()">
+            ✨ Explain It My Way!
+        </button>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            🤔 Thinking of the perfect explanation for you...
+        </div>
+
+        <!-- Result -->
+        <div class="result-box" id="result">
+            <h3>📖 Your Personalized Explanation</h3>
+            <p id="explanation-text"></p>
+        </div>
+
+    </div>
+
+    <script>
+        let selectedInterest = '';
+
+        // ===== THEME TOGGLE =====
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('toggle-icon');
+            const text = document.getElementById('toggle-text');
+
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                icon.textContent = '🌙';
+                text.textContent = 'Dark Mode';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                icon.textContent = '☀️';
+                text.textContent = 'Light Mode';
+            }
+        }
+
+        // ===== INTEREST TAGS =====
+        function selectTag(element, interest) {
+            document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            selectedInterest = interest;
+        }
+
+        // ===== EXPLAIN =====
+        function explainConcept() {
+            const concept = document.getElementById('concept').value;
+            const language = document.getElementById('language').value;
+            const level = document.getElementById('level').value;
+
+            if (!concept) {
+                alert('Please enter a concept!');
+                return;
+            }
+            if (!selectedInterest) {
+                alert('Please select an interest!');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            setTimeout(() => {
+                const dummyExplanation = `🌟 Let's learn "${concept}" using ${selectedInterest}!
+
+Okay so you know when a cricket ball is thrown up in the air... it always comes back down right? It NEVER just floats away! That's gravity!
+
+Gravity is basically Earth giving everything a big invisible hug and pulling it towards itself. 🌍
+
+👉 When a batsman hits the ball up — gravity pulls it back down.
+👉 When a fielder jumps to catch — gravity brings them back to the ground.
+👉 Even the cricket ball sitting still on the pitch? Gravity is holding it there!
+
+Without gravity, the cricket ball would just float away into space forever! 😄
+
+So remember: Gravity = Earth's invisible pulling power that keeps EVERYTHING on the ground!
+
+Simple right? 🎯`;
+
+                document.getElementById('explanation-text').innerText = dummyExplanation;
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+            }, 1500);
+        }
+    </script>
+
+</body>
+</html>
