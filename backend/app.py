@@ -1,45 +1,75 @@
-# Brain of Learnify app
-# Takes concept + interest from user
-# Uses Gemini AI to explain it in a personalized way
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import google.generativeai as genai
+from groq import Groq
 import os
 from dotenv import load_dotenv
 
-# Load secret API key
 load_dotenv()
 
-# Create Flask app
 app = Flask(__name__)
 CORS(app)
 
-# Connect to Gemini AI
-genai.configure(api_key=os.getenv("AIzaSyCaoKRLSiwRtmbL1i0eSF9e8wO6Wcb02rs"))
-model = genai.GenerativeModel("gemini-2.0-flash")
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# Main route
+
 @app.route('/explain', methods=['POST'])
 def explain():
     data = request.json
     concept = data.get('concept')
     interest = data.get('interest')
     language = data.get('language', 'English')
+    level = data.get('level', 'a school student')
 
-    # Prompt sent to Gemini
     prompt = f"""
-    You are a fun and creative teacher.
-    Explain the concept of "{concept}" to a student
-    using examples related to "{interest}".
-    Make it simple, fun, and easy to remember.
-    Explain the concept n way as if you are xeplaining it to a 5 year old child.
-    Respond in {language}.
-    """
+You are a fun and simple teacher. Explain concepts in this EXACT format:
 
-    response = model.generate_content(prompt)
+📌 DEFINITION:
+Give a simple one or two line definition of {concept} in plain words. No jargon.
 
-    return jsonify({"explanation": response.text})
+🏏 EXAMPLE:
+Explain {concept} using a real life example from {interest}.
+Make the comparison very clear — show exactly how {interest} relates to {concept}.
+Every part of the example should map to a part of the concept.
+
+📝 KEY POINTS:
+Give 3 to 4 short bullet points about {concept}.
+Each point should also use a small {interest} example or comparison.
+Keep each point to one or two lines maximum.
+
+STRICT RULES:
+- Use simple everyday words only
+- No complex technical terms without explanation
+- Make it feel like a smart friend explaining on WhatsApp
+- Use emojis to make it fun
+- Respond in {language}
+- Do NOT change the concept or simplify it wrongly
+- The definition must be accurate
+- The example must clearly map to the concept
+
+CONCEPT: {concept}
+INTEREST: {interest}
+LEVEL: {level}
+LANGUAGE: {language}
+"""
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a fun, friendly teacher who explains complex concepts using simple language and relatable examples. Never use complicated words. Always be encouraging."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.7,
+        max_tokens=1500
+    )
+
+    return jsonify({"explanation": response.choices[0].message.content})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
