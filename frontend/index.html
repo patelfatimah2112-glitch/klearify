@@ -534,7 +534,7 @@
         document.getElementById("loading").style.display = "block";
         document.getElementById("result").style.display = "none";
 
-        fetch("http://127.0.0.1:5000/explain", {
+        fetch("https://klearify.onrender.com/explain", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
