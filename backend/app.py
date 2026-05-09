@@ -40,7 +40,7 @@ STRICT RULES:
 - Use simple everyday words only
 - No complex technical terms without explanation
 - Make it feel like a smart friend explaining on WhatsApp
-- Use emojis to make it fun
+- Use maximum 3 emojis in the entire explanation. Only use them for the 3 section headings.
 - Respond in {language}
 - Do NOT change the concept or simplify it wrongly
 - The definition must be accurate
