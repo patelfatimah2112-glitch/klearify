@@ -81,6 +81,16 @@
         gap: 16px;
       }
 
+      .pricing-link {
+        padding: 8px 16px;
+        background: var(--toggle-bg);
+        border-radius: 50px;
+        color: var(--text);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
       .credits-badge {
         background: linear-gradient(135deg, #667eea, #764ba2);
         padding: 8px 16px;
@@ -357,6 +367,7 @@
     <nav>
       <div class="logo">✨ Klearify</div>
       <div class="nav-right">
+        <a href="pricing.html" class="pricing-link">💎 Pricing</a>
         <div class="credits-badge">
           Credits: <span id="credits-display">20</span>
         </div>
@@ -523,13 +534,10 @@
           alert("Please select an interest!");
           return;
         }
-        if (credits <= 0) {
-          document.getElementById("credits-popup").classList.add("show");
-          return;
-        }
 
-        credits--;
-        saveCredits();
+        // Credits disabled temporarily - unlimited for all users
+        // credits--;
+        // saveCredits();
 
         document.getElementById("loading").style.display = "block";
         document.getElementById("result").style.display = "none";
@@ -556,8 +564,6 @@
           .catch(function (err) {
             alert("Something went wrong! Make sure backend is running.");
             document.getElementById("loading").style.display = "none";
-            credits++;
-            saveCredits();
           });
       }
 
@@ -572,7 +578,6 @@
         );
 
         if (isSafari) {
-          // Safari method - download as HTML file
           var content =
             '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Klearify - ' +
             concept +
@@ -597,7 +602,6 @@
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
         } else {
-          // Chrome and others - print as PDF
           var printWindow = window.open("", "_blank");
           printWindow.document.write(
             '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Klearify - ' +

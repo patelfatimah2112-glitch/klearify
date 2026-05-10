@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klearify - Pricing</title>
+    <style>
+      [data-theme="dark"] {
+        --bg: #0f0f1a;
+        --card: rgba(255, 255, 255, 0.05);
+        --card-border: rgba(255, 255, 255, 0.1);
+        --text: #ffffff;
+        --text-muted: #888888;
+        --nav-bg: rgba(255, 255, 255, 0.05);
+        --toggle-bg: rgba(255, 255, 255, 0.1);
+      }
+
+      [data-theme="light"] {
+        --bg: #f0f2ff;
+        --card: #ffffff;
+        --card-border: #e0e0f0;
+        --text: #1a1a2e;
+        --text-muted: #666666;
+        --nav-bg: rgba(255, 255, 255, 0.8);
+        --toggle-bg: #e0e0f0;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: var(--nav-bg);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo {
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-decoration: none;
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .theme-toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        background: var(--toggle-bg);
+        padding: 8px 16px;
+        border-radius: 50px;
+        border: none;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .back-btn {
+        padding: 8px 16px;
+        background: var(--toggle-bg);
+        border: none;
+        border-radius: 50px;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .hero {
+        text-align: center;
+        padding: 60px 20px 40px;
+      }
+
+      .hero h1 {
+        font-size: 48px;
+        font-weight: 800;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        font-size: 18px;
+        color: var(--text-muted);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .pricing-container {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        padding: 40px 20px 80px;
+        flex-wrap: wrap;
+      }
+
+      .pricing-card {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 40px;
+        width: 320px;
+        position: relative;
+      }
+
+      .pricing-card.popular {
+        border: 2px solid #667eea;
+        transform: scale(1.05);
+      }
+
+      .popular-badge {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 4px 20px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .plan-name {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+
+      .plan-desc {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 24px;
+      }
+
+      .plan-price {
+        font-size: 48px;
+        font-weight: 800;
+        margin-bottom: 4px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .plan-period {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 32px;
+      }
+
+      .features-list {
+        list-style: none;
+        margin-bottom: 32px;
+      }
+
+      .features-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--card-border);
+        font-size: 15px;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .features-list li:last-child {
+        border-bottom: none;
+      }
+
+      .check {
+        color: #667eea;
+        font-weight: 700;
+        font-size: 18px;
+      }
+
+      .cross {
+        color: #888;
+        font-weight: 700;
+        font-size: 18px;
+      }
+
+      .plan-btn {
+        width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+      }
+
+      .plan-btn.free {
+        background: var(--toggle-bg);
+        color: var(--text);
+      }
+
+      .plan-btn.premium {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+      }
+
+      .plan-btn.coming-soon {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        opacity: 0.8;
+        cursor: not-allowed;
+      }
+
+      .faq-section {
+        max-width: 700px;
+        margin: 0 auto 80px;
+        padding: 0 20px;
+      }
+
+      .faq-section h2 {
+        text-align: center;
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 32px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .faq-item {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 16px;
+      }
+
+      .faq-item h3 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+
+      .faq-item p {
+        font-size: 14px;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+
+      /* Coming soon popup */
+      .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .popup-overlay.show {
+        display: flex;
+      }
+
+      .popup {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 400px;
+        text-align: center;
+      }
+
+      .popup h2 {
+        font-size: 24px;
+        margin-bottom: 12px;
+        color: #667eea;
+      }
+
+      .popup p {
+        color: var(--text-muted);
+        margin-bottom: 24px;
+        line-height: 1.6;
+      }
+
+      .popup-btn {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      @media (max-width: 600px) {
+        .hero h1 {
+          font-size: 32px;
+        }
+        .pricing-card.popular {
+          transform: scale(1);
+        }
+        nav {
+          padding: 16px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Coming Soon Popup -->
+    <div class="popup-overlay" id="coming-popup">
+      <div class="popup">
+        <h2>Coming Soon! 🚀</h2>
+        <p>
+          We're working hard to bring you Premium. Enter your email and we'll
+          notify you when it's ready!
+        </p>
+        <input
+          type="email"
+          id="notify-email"
+          placeholder="your@email.com"
+          style="
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+            background: transparent;
+            color: var(--text);
+            font-size: 16px;
+            margin-bottom: 16px;
+            outline: none;
+          "
+        />
+        <button class="popup-btn" onclick="submitNotify()">Notify Me!</button>
+        <br /><br />
+        <button
+          onclick="closePopup()"
+          style="
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+          "
+        >
+          Maybe later
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+      <a href="index.html" class="logo">✨ Klearify</a>
+      <div class="nav-right">
+        <a href="index.html" class="back-btn">← Back to App</a>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span id="toggle-icon">☀️</span>
+          <span id="toggle-text">Light Mode</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>Simple, honest pricing</h1>
+      <p>Start for free. Upgrade when you need more. No hidden fees.</p>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="pricing-container">
+      <!-- Free Plan -->
+      <div class="pricing-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-desc">Perfect for trying out Klearify</div>
+        <div class="plan-price">₹0</div>
+        <div class="plan-period">forever free</div>
+        <ul class="features-list">
+          <li><span class="check">✓</span> 20 explanations per day</li>
+          <li><span class="check">✓</span> All interest categories</li>
+          <li><span class="check">✓</span> 6 languages</li>
+          <li><span class="check">✓</span> PDF download</li>
+          <li><span class="check">✓</span> Dark and light mode</li>
+          <li><span class="cross">✗</span> Unlimited explanations</li>
+          <li><span class="cross">✗</span> Priority speed</li>
+          <li><span class="cross">✗</span> Save history</li>
+        </ul>
+        <button
+          class="plan-btn free"
+          onclick="window.location.href = 'index.html'"
+        >
+          Start for Free
+        </button>
+      </div>
+
+      <!-- Premium Plan -->
+      <div class="pricing-card popular">
+        <div class="popular-badge">Most Popular</div>
+        <div class="plan-name">Premium</div>
+        <div class="plan-desc">For serious students who want more</div>
+        <div class="plan-price">₹99</div>
+        <div class="plan-period">per month</div>
+        <ul class="features-list">
+          <li><span class="check">✓</span> Unlimited explanations</li>
+          <li><span class="check">✓</span> All interest categories</li>
+          <li><span class="check">✓</span> All languages</li>
+          <li><span class="check">✓</span> PDF download</li>
+          <li><span class="check">✓</span> Dark and light mode</li>
+          <li><span class="check">✓</span> Priority speed</li>
+          <li><span class="check">✓</span> Save explanation history</li>
+          <li><span class="check">✓</span> Early access to new features</li>
+        </ul>
+        <button class="plan-btn coming-soon" onclick="showComingSoon()">
+          Coming Soon 🚀
+        </button>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq-item">
+        <h3>Is the free plan really free forever?</h3>
+        <p>
+          Yes! The free plan gives you 20 explanations every day, forever. No
+          credit card needed.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>When will Premium be available?</h3>
+        <p>
+          We're working hard on it! Click "Coming Soon" and enter your email to
+          be the first to know when it launches.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What payment methods will you accept?</h3>
+        <p>
+          We'll accept UPI, debit/credit cards, net banking, and all major
+          Indian payment methods through Razorpay.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Can I cancel anytime?</h3>
+        <p>
+          Yes! No contracts, no lock-ins. Cancel your Premium subscription
+          anytime with one click.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Is my data safe?</h3>
+        <p>
+          Absolutely. We don't store your notes or explanations on our servers.
+          Everything is processed securely.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      function toggleTheme() {
+        var html = document.documentElement;
+        var icon = document.getElementById("toggle-icon");
+        var text = document.getElementById("toggle-text");
+        if (html.getAttribute("data-theme") === "dark") {
+          html.setAttribute("data-theme", "light");
+          icon.textContent = "🌙";
+          text.textContent = "Dark Mode";
+        } else {
+          html.setAttribute("data-theme", "dark");
+          icon.textContent = "☀️";
+          text.textContent = "Light Mode";
+        }
+      }
+
+      function showComingSoon() {
+        document.getElementById("coming-popup").classList.add("show");
+      }
+
+      function closePopup() {
+        document.getElementById("coming-popup").classList.remove("show");
+      }
+
+      function submitNotify() {
+        var email = document.getElementById("notify-email").value;
+        if (!email) {
+          alert("Please enter your email!");
+          return;
+        }
+        alert(
+          "Thank you! We will notify you at " +
+            email +
+            " when Premium launches!",
+        );
+        closePopup();
+      }
+    </script>
+  </body>
+</html>
