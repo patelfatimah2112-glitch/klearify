@@ -367,6 +367,20 @@
     <nav>
       <div class="logo">✨ Klearify</div>
       <div class="nav-right">
+        <a
+          href="login.html"
+          id="login-btn"
+          style="
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+          "
+          >Login</a
+        >
         <a href="pricing.html" class="pricing-link">💎 Pricing</a>
         <div class="credits-badge">
           Credits: <span id="credits-display">20</span>
@@ -623,6 +637,22 @@
       }
 
       loadCredits();
+
+      // Check login status
+      var SUPABASE_URL = "https://xfpxgptieddlvtksnhql.supabase.co";
+      var SUPABASE_KEY = "sb_publishable_ikI0hfoCXfkwweTUTxwsCQ_CrJ_PBt4";
+      var supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+      );
+
+      supabaseClient.auth.getSession().then(function ({ data: { session } }) {
+        var loginBtn = document.getElementById("login-btn");
+        if (session) {
+          loginBtn.textContent = "👤 " + session.user.email.split("@")[0];
+          loginBtn.href = "history.html";
+        }
+      });
     </script>
 
     <!-- Footer -->
