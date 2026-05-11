@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klearify - Privacy Policy</title>
+    <style>
+      [data-theme="dark"] {
+        --bg: #0f0f1a;
+        --card: rgba(255, 255, 255, 0.05);
+        --card-border: rgba(255, 255, 255, 0.1);
+        --text: #ffffff;
+        --text-muted: #888888;
+        --nav-bg: rgba(255, 255, 255, 0.05);
+        --toggle-bg: rgba(255, 255, 255, 0.1);
+      }
+      [data-theme="light"] {
+        --bg: #f0f2ff;
+        --card: #ffffff;
+        --card-border: #e0e0f0;
+        --text: #1a1a2e;
+        --text-muted: #666666;
+        --nav-bg: rgba(255, 255, 255, 0.8);
+        --toggle-bg: #e0e0f0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: var(--nav-bg);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-decoration: none;
+      }
+      .back-btn {
+        padding: 8px 16px;
+        background: var(--toggle-bg);
+        border: none;
+        border-radius: 50px;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .content {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 0 20px;
+      }
+      h1 {
+        font-size: 40px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .last-updated {
+        color: var(--text-muted);
+        font-size: 14px;
+        margin-bottom: 40px;
+      }
+      .section {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 20px;
+      }
+      .section h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #667eea;
+      }
+      .section p {
+        color: var(--text-muted);
+        line-height: 1.8;
+        font-size: 15px;
+        margin-bottom: 12px;
+      }
+      .section p:last-child {
+        margin-bottom: 0;
+      }
+      .section ul {
+        color: var(--text-muted);
+        line-height: 1.8;
+        font-size: 15px;
+        padding-left: 20px;
+      }
+      footer {
+        text-align: center;
+        padding: 40px 20px;
+        border-top: 1px solid var(--card-border);
+        color: var(--text-muted);
+        font-size: 14px;
+        margin-top: 60px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="logo">✨ Klearify</a>
+      <a href="index.html" class="back-btn">← Back to App</a>
+    </nav>
+
+    <div class="content">
+      <h1>Privacy Policy</h1>
+      <div class="last-updated">Last updated: May 9, 2025</div>
+
+      <div class="section">
+        <h2>1. Introduction</h2>
+        <p>
+          Welcome to Klearify. We are committed to protecting your personal
+          information and your right to privacy. This Privacy Policy explains
+          how we collect, use, and protect your information when you use our
+          website at klearify.vercel.app.
+        </p>
+        <p>
+          Please read this policy carefully. If you disagree with its terms,
+          please stop using our website.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>2. Information We Collect</h2>
+        <p>We collect minimal information to provide our service:</p>
+        <ul>
+          <li>Concepts and topics you enter for explanation</li>
+          <li>Your selected interests and language preferences</li>
+          <li>Usage data such as number of explanations generated</li>
+          <li>If you sign up, your email address and name</li>
+        </ul>
+        <p>
+          We do NOT collect or store sensitive personal data like passwords in
+          plain text, payment information, or location data.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>3. How We Use Your Information</h2>
+        <p>We use your information only to:</p>
+        <ul>
+          <li>Generate personalized explanations for you</li>
+          <li>Save your explanation history (if logged in)</li>
+          <li>Improve our AI explanations and service quality</li>
+          <li>Send you updates about Klearify (only if you subscribe)</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>4. Data Storage and Security</h2>
+        <p>
+          Your data is stored securely using industry-standard encryption. We
+          use Supabase for database storage, which is SOC 2 compliant and
+          follows strict security standards.
+        </p>
+        <p>
+          We do not sell, trade, or rent your personal information to any third
+          parties.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>5. Third Party Services</h2>
+        <p>We use the following third party services to operate Klearify:</p>
+        <ul>
+          <li>Groq API — for generating AI explanations</li>
+          <li>Vercel — for hosting our website</li>
+          <li>Render — for hosting our backend server</li>
+          <li>Supabase — for database and authentication</li>
+        </ul>
+        <p>
+          Each of these services has their own privacy policy and data
+          protection measures.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>6. Cookies</h2>
+        <p>
+          We use local storage (similar to cookies) to save your preferences
+          like dark/light mode and daily credit usage. This data stays on your
+          device and is not sent to our servers.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>7. Your Rights</h2>
+        <p>You have the right to:</p>
+        <ul>
+          <li>Access your personal data at any time</li>
+          <li>Request deletion of your account and data</li>
+          <li>Opt out of any marketing communications</li>
+          <li>Know what data we hold about you</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>8. Children's Privacy</h2>
+        <p>
+          Klearify is designed to be safe for students of all ages. We do not
+          knowingly collect personal information from children under 13 without
+          parental consent. If you believe a child has provided us personal
+          information, please contact us immediately.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>9. Changes to This Policy</h2>
+        <p>
+          We may update this Privacy Policy from time to time. We will notify
+          you of any changes by updating the date at the top of this page. Your
+          continued use of Klearify after any changes means you accept the
+          updated policy.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>10. Contact Us</h2>
+        <p>
+          If you have any questions about this Privacy Policy, please contact us
+          at:
+        </p>
+        <p>Email: patelfatimah2112@gmail.com</p>
+        <p>Website: klearify.vercel.app</p>
+      </div>
+    </div>
+
+    <footer>
+      <div>© 2025 Klearify. All rights reserved.</div>
+      <div style="margin-top: 8px; font-size: 12px">
+        Made with ❤️ by Fatimah Patel
+      </div>
+    </footer>
+  </body>
+</html>
