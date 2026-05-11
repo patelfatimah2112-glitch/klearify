@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klearify - Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      [data-theme="dark"] {
+        --bg: #0f0f1a;
+        --card: rgba(255, 255, 255, 0.05);
+        --card-border: rgba(255, 255, 255, 0.1);
+        --text: #ffffff;
+        --text-muted: #888888;
+        --input-bg: rgba(255, 255, 255, 0.08);
+        --input-border: rgba(255, 255, 255, 0.15);
+        --nav-bg: rgba(255, 255, 255, 0.05);
+        --toggle-bg: rgba(255, 255, 255, 0.1);
+      }
+      [data-theme="light"] {
+        --bg: #f0f2ff;
+        --card: #ffffff;
+        --card-border: #e0e0f0;
+        --text: #1a1a2e;
+        --text-muted: #666666;
+        --input-bg: #f5f5ff;
+        --input-border: #d0d0e8;
+        --nav-bg: rgba(255, 255, 255, 0.8);
+        --toggle-bg: #e0e0f0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: var(--nav-bg);
+        backdrop-filter: blur(10px);
+      }
+      .logo {
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-decoration: none;
+      }
+      .theme-toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        background: var(--toggle-bg);
+        padding: 8px 16px;
+        border-radius: 50px;
+        border: none;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+      }
+      .auth-card {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 40px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      }
+      .auth-title {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .auth-subtitle {
+        color: var(--text-muted);
+        font-size: 14px;
+        margin-bottom: 32px;
+      }
+      .tabs {
+        display: flex;
+        gap: 4px;
+        background: var(--input-bg);
+        border-radius: 12px;
+        padding: 4px;
+        margin-bottom: 28px;
+      }
+      .tab {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+        border: none;
+        background: transparent;
+      }
+      .tab.active {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+      }
+      .input-group {
+        margin-bottom: 16px;
+      }
+      .input-group label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 14px 16px;
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        border-radius: 12px;
+        color: var(--text);
+        font-size: 15px;
+        outline: none;
+      }
+      .input-group input:focus {
+        border-color: #667eea;
+      }
+      .input-group input::placeholder {
+        color: var(--text-muted);
+      }
+      .auth-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .auth-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .message {
+        margin-top: 16px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        text-align: center;
+        display: none;
+      }
+      .message.success {
+        background: rgba(0, 200, 100, 0.1);
+        border: 1px solid rgba(0, 200, 100, 0.3);
+        color: #00c864;
+      }
+      .message.error {
+        background: rgba(255, 50, 50, 0.1);
+        border: 1px solid rgba(255, 50, 50, 0.3);
+        color: #ff5555;
+      }
+      .divider {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+        margin: 20px 0;
+        position: relative;
+      }
+      .divider::before,
+      .divider::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 40%;
+        height: 1px;
+        background: var(--card-border);
+      }
+      .divider::before {
+        left: 0;
+      }
+      .divider::after {
+        right: 0;
+      }
+      footer {
+        text-align: center;
+        padding: 20px;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="logo">✨ Klearify</a>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="toggle-icon">☀️</span>
+        <span id="toggle-text">Light Mode</span>
+      </button>
+    </nav>
+
+    <div class="container">
+      <div class="auth-card">
+        <div class="auth-title">Welcome to Klearify</div>
+        <div class="auth-subtitle">
+          Sign in or create an account to save your history
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button
+            class="tab active"
+            id="login-tab"
+            onclick="switchTab('login')"
+          >
+            Sign In
+          </button>
+          <button class="tab" id="signup-tab" onclick="switchTab('signup')">
+            Sign Up
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form">
+          <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="login-email" placeholder="your@email.com" />
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" />
+          </div>
+          <button class="auth-btn" onclick="handleLogin()">Sign In</button>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" style="display: none">
+          <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="signup-name" placeholder="Fatimah Patel" />
+          </div>
+          <div class="input-group">
+            <label>Email</label>
+            <input
+              type="email"
+              id="signup-email"
+              placeholder="your@email.com"
+            />
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              id="signup-password"
+              placeholder="Min 6 characters"
+            />
+          </div>
+          <button class="auth-btn" onclick="handleSignup()">
+            Create Account
+          </button>
+        </div>
+
+        <!-- Message -->
+        <div class="message" id="auth-message"></div>
+      </div>
+    </div>
+
+    <footer>© 2025 Klearify. All rights reserved.</footer>
+
+    <script>
+      // ===== REPLACE THESE WITH YOUR ACTUAL VALUES =====
+      var SUPABASE_URL = "https://xfpxgptieddlvtksnhql.supabase.co";
+      var SUPABASE_KEY = "sb_publishable_ikI0hfoCXfkwweTUTxwsCQ_CrJ_PBt4";
+      // =================================================
+
+      var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      function toggleTheme() {
+        var html = document.documentElement;
+        var icon = document.getElementById("toggle-icon");
+        var text = document.getElementById("toggle-text");
+        if (html.getAttribute("data-theme") === "dark") {
+          html.setAttribute("data-theme", "light");
+          icon.textContent = "🌙";
+          text.textContent = "Dark Mode";
+        } else {
+          html.setAttribute("data-theme", "dark");
+          icon.textContent = "☀️";
+          text.textContent = "Light Mode";
+        }
+      }
+
+      function switchTab(tab) {
+        if (tab === "login") {
+          document.getElementById("login-form").style.display = "block";
+          document.getElementById("signup-form").style.display = "none";
+          document.getElementById("login-tab").classList.add("active");
+          document.getElementById("signup-tab").classList.remove("active");
+        } else {
+          document.getElementById("login-form").style.display = "none";
+          document.getElementById("signup-form").style.display = "block";
+          document.getElementById("login-tab").classList.remove("active");
+          document.getElementById("signup-tab").classList.add("active");
+        }
+        hideMessage();
+      }
+
+      function showMessage(text, type) {
+        var msg = document.getElementById("auth-message");
+        msg.textContent = text;
+        msg.className = "message " + type;
+        msg.style.display = "block";
+      }
+
+      function hideMessage() {
+        document.getElementById("auth-message").style.display = "none";
+      }
+
+      async function handleLogin() {
+        var email = document.getElementById("login-email").value;
+        var password = document.getElementById("login-password").value;
+
+        if (!email || !password) {
+          showMessage("Please fill in all fields!", "error");
+          return;
+        }
+
+        var btn = document.querySelector("#login-form .auth-btn");
+        btn.disabled = true;
+        btn.textContent = "Signing in...";
+
+        var { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (error) {
+          showMessage(error.message, "error");
+          btn.disabled = false;
+          btn.textContent = "Sign In";
+        } else {
+          showMessage("Signed in successfully! Redirecting...", "success");
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
+        }
+      }
+
+      async function handleSignup() {
+        var name = document.getElementById("signup-name").value;
+        var email = document.getElementById("signup-email").value;
+        var password = document.getElementById("signup-password").value;
+
+        if (!name || !email || !password) {
+          showMessage("Please fill in all fields!", "error");
+          return;
+        }
+
+        if (password.length < 6) {
+          showMessage("Password must be at least 6 characters!", "error");
+          return;
+        }
+
+        var btn = document.querySelector("#signup-form .auth-btn");
+        btn.disabled = true;
+        btn.textContent = "Creating account...";
+
+        var { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: { name: name },
+          },
+        });
+
+        if (error) {
+          showMessage(error.message, "error");
+          btn.disabled = false;
+          btn.textContent = "Create Account";
+        } else {
+          showMessage(
+            "Account created! Please check your email to verify your account.",
+            "success",
+          );
+          btn.disabled = false;
+          btn.textContent = "Create Account";
+        }
+      }
+
+      // Check if already logged in
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          window.location.href = "index.html";
+        }
+      });
+    </script>
+  </body>
+</html>
