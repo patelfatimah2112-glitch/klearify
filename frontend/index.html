@@ -486,6 +486,21 @@
     </div>
 
     <script>
+      // At the very top of your <script> tag
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        window.location.href = "/login.html"; // Not logged in → redirect
+      }
+
+      // Show user info
+      fetch("/api/user", {
+        headers: { Authorization: "Bearer " + token },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          document.getElementById("username").innerText = data.name;
+        });
       var selectedInterest = "";
       var credits = 20;
 

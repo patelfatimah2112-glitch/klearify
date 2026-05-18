@@ -265,7 +265,7 @@
         <div id="signup-form" style="display: none">
           <div class="input-group">
             <label>Full Name</label>
-            <input type="text" id="signup-name" placeholder="Fatimah Patel" />
+            <input type="text" id="signup-name" placeholder="John Smith" />
           </div>
           <div class="input-group">
             <label>Email</label>
@@ -296,12 +296,70 @@
     <footer>© 2025 Klearify. All rights reserved.</footer>
 
     <script>
-      // ===== REPLACE THESE WITH YOUR ACTUAL VALUES =====
+      var selectedInterest = "";
+      var credits = 20;
+
+      // ===== SUPABASE SETUP (only once) =====
       var SUPABASE_URL = "https://xfpxgptieddlvtksnhql.supabase.co";
       var SUPABASE_KEY = "sb_publishable_ikI0hfoCXfkwweTUTxwsCQ_CrJ_PBt4";
-      // =================================================
+      var supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+      );
 
-      var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      // ===== CHECK LOGIN STATUS (only once) =====
+      supabaseClient.auth.getSession().then(function (result) {
+        var session = result.data.session;
+        var loginBtn = document.getElementById("login-btn");
+        if (loginBtn) {
+          if (session) {
+            var username = session.user.email.split("@")[0];
+            loginBtn.textContent = "👤 " + username;
+            loginBtn.href = "history.html";
+          } else {
+            loginBtn.textContent = "🔐 Login";
+            loginBtn.href = "login.html";
+          }
+        }
+      });
+
+      // ===== LISTEN FOR AUTH CHANGES (fixes refresh issue) =====
+      supabaseClient.auth.onAuthStateChange(function (event, session) {
+        var loginBtn = document.getElementById("login-btn");
+        if (loginBtn) {
+          if (session) {
+            var username = session.user.email.split("@")[0];
+            loginBtn.textContent = "👤 " + username;
+            loginBtn.href = "history.html";
+          } else {
+            loginBtn.textContent = "🔐 Login";
+            loginBtn.href = "login.html";
+          }
+        }
+      });
+
+      function loadCredits() {
+        var today = new Date().toDateString();
+        var savedDate = localStorage.getItem("Klearify-date");
+        var savedCredits = localStorage.getItem("Klearify-credits");
+        if (savedDate === today && savedCredits !== null) {
+          credits = parseInt(savedCredits);
+        } else {
+          credits = 20;
+          localStorage.setItem("Klearify-date", today);
+          localStorage.setItem("Klearify-credits", "20");
+        }
+        document.getElementById("credits-display").innerText = credits;
+      }
+
+      function saveCredits() {
+        localStorage.setItem("Klearify-credits", credits.toString());
+        document.getElementById("credits-display").innerText = credits;
+      }
+
+      function closePopup() {
+        document.getElementById("credits-popup").classList.remove("show");
+      }
 
       function toggleTheme() {
         var html = document.documentElement;
@@ -318,109 +376,108 @@
         }
       }
 
-      function switchTab(tab) {
-        if (tab === "login") {
-          document.getElementById("login-form").style.display = "block";
-          document.getElementById("signup-form").style.display = "none";
-          document.getElementById("login-tab").classList.add("active");
-          document.getElementById("signup-tab").classList.remove("active");
-        } else {
-          document.getElementById("login-form").style.display = "none";
-          document.getElementById("signup-form").style.display = "block";
-          document.getElementById("login-tab").classList.remove("active");
-          document.getElementById("signup-tab").classList.add("active");
+      function selectTag(element, interest) {
+        var tags = document.querySelectorAll(".tag");
+        for (var i = 0; i < tags.length; i++) {
+          tags[i].classList.remove("active");
         }
-        hideMessage();
+        element.classList.add("active");
+        selectedInterest = interest;
       }
 
-      function showMessage(text, type) {
-        var msg = document.getElementById("auth-message");
-        msg.textContent = text;
-        msg.className = "message " + type;
-        msg.style.display = "block";
-      }
+      function explainConcept() {
+        var concept = document.getElementById("concept").value;
+        var language = document.getElementById("language").value;
+        var level = document.getElementById("level").value;
 
-      function hideMessage() {
-        document.getElementById("auth-message").style.display = "none";
-      }
-
-      async function handleLogin() {
-        var email = document.getElementById("login-email").value;
-        var password = document.getElementById("login-password").value;
-
-        if (!email || !password) {
-          showMessage("Please fill in all fields!", "error");
+        if (!concept) {
+          alert("Please enter a concept!");
+          return;
+        }
+        if (!selectedInterest) {
+          alert("Please select an interest!");
           return;
         }
 
-        var btn = document.querySelector("#login-form .auth-btn");
-        btn.disabled = true;
-        btn.textContent = "Signing in...";
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("result").style.display = "none";
 
-        var { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
+        fetch("https://klearify.onrender.com/explain", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            concept: concept,
+            interest: selectedInterest,
+            language: language,
+            level: level,
+          }),
+        })
+          .then(function (res) {
+            return res.json();
+          })
+          .then(function (data) {
+            document.getElementById("explanation-text").innerText =
+              data.explanation;
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("result").style.display = "block";
+          })
+          .catch(function (err) {
+            alert("Something went wrong! Make sure backend is running.");
+            document.getElementById("loading").style.display = "none";
+          });
+      }
+
+      function downloadPDF() {
+        var concept = document.getElementById("concept").value;
+        var explanation = document.getElementById("explanation-text").innerText;
+        var language = document.getElementById("language").value;
+        var level = document.getElementById("level").value;
+        var isSafari = /^((?!chrome|android).)*safari/i.test(
+          navigator.userAgent,
+        );
+        var htmlContent =
+          '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Klearify - ' +
+          concept +
+          '</title><style>@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap");body{font-family:"Noto Sans",sans-serif;max-width:800px;margin:40px auto;padding:40px;color:#1a1a2e;line-height:1.8;}.header{border-bottom:3px solid #667eea;padding-bottom:20px;margin-bottom:30px;}.logo{font-size:28px;font-weight:800;color:#667eea;}.topic{font-size:22px;font-weight:700;margin:8px 0;}.meta{color:#888;font-size:14px;}.explanation{font-size:16px;white-space:pre-line;line-height:2;}.footer{margin-top:40px;padding-top:20px;border-top:1px solid #eee;color:#888;font-size:12px;text-align:center;}</style></head><body><div class="header"><div class="logo">Klearify</div><div class="topic">' +
+          concept +
+          '</div><div class="meta">Interest: ' +
+          selectedInterest +
+          " | Language: " +
+          language +
+          " | Level: " +
+          level +
+          '</div></div><div class="explanation">' +
+          explanation +
+          '</div><div class="footer">Generated by Klearify</div>' +
+          (isSafari
+            ? ""
+            : "<script>window.onload=function(){window.print();}<\/script>") +
+          "</body></html>";
+
+        if (isSafari) {
+          var blob = new Blob([htmlContent], { type: "text/html" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "Klearify-" + concept + ".html";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        } else {
+          var printWindow = window.open("", "_blank");
+          printWindow.document.write(htmlContent);
+          printWindow.document.close();
+        }
+      }
+
+      function logout() {
+        supabaseClient.auth.signOut().then(function () {
+          window.location.reload();
         });
-
-        if (error) {
-          showMessage(error.message, "error");
-          btn.disabled = false;
-          btn.textContent = "Sign In";
-        } else {
-          showMessage("Signed in successfully! Redirecting...", "success");
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 1500);
-        }
       }
 
-      async function handleSignup() {
-        var name = document.getElementById("signup-name").value;
-        var email = document.getElementById("signup-email").value;
-        var password = document.getElementById("signup-password").value;
-
-        if (!name || !email || !password) {
-          showMessage("Please fill in all fields!", "error");
-          return;
-        }
-
-        if (password.length < 6) {
-          showMessage("Password must be at least 6 characters!", "error");
-          return;
-        }
-
-        var btn = document.querySelector("#signup-form .auth-btn");
-        btn.disabled = true;
-        btn.textContent = "Creating account...";
-
-        var { data, error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-          options: {
-            data: { name: name },
-          },
-        });
-
-        if (error) {
-          showMessage(error.message, "error");
-          btn.disabled = false;
-          btn.textContent = "Create Account";
-        } else {
-          showMessage(
-            "Account created! Please check your email to verify your account.",
-            "success",
-          );
-          btn.disabled = false;
-          btn.textContent = "Create Account";
-        }
-      }
-
-      // Check if already logged in
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-          window.location.href = "/";
-        }
-      });
+      loadCredits();
     </script>
   </body>
 </html>
