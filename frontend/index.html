@@ -747,6 +747,10 @@
         selectedInterest = interest;
       }
 
+      function saveCredits() {
+        localStorage.setItem("Klearify-credits", credits.toString());
+        document.getElementById("credits-display").innerText = credits;
+      }
       // ===== EXPLAIN =====
       function explainConcept() {
         var concept = document.getElementById("concept").value;
@@ -761,6 +765,12 @@
           return;
         }
 
+        if (credits <= 0) {
+          document.getElementById("credits-popup").classList.add("show");
+          return;
+        }
+        credits--;
+        saveCredits();
         document.getElementById("loading").style.display = "block";
         document.getElementById("result").style.display = "none";
 
