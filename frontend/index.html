@@ -651,14 +651,28 @@
         var loginBtn = document.getElementById("login-btn");
         if (loginBtn) {
           if (session) {
-            var username = session.user.email.split("@")[0];
-            loginBtn.textContent = "👤 " + username;
+            var name = session.user.user_metadata?.name || session.user.email;
+            var initial = name.charAt(0).toUpperCase();
+            loginBtn.textContent = initial;
             loginBtn.href = "history.html";
             loginBtn.style.background =
               "linear-gradient(135deg, #667eea, #764ba2)";
+            loginBtn.style.borderRadius = "50%";
+            loginBtn.style.width = "38px";
+            loginBtn.style.height = "38px";
+            loginBtn.style.display = "flex";
+            loginBtn.style.alignItems = "center";
+            loginBtn.style.justifyContent = "center";
+            loginBtn.style.fontWeight = "800";
+            loginBtn.style.fontSize = "16px";
+            loginBtn.style.padding = "0";
           } else {
             loginBtn.textContent = "🔐 Login";
             loginBtn.href = "login.html";
+            loginBtn.style.borderRadius = "50px";
+            loginBtn.style.width = "auto";
+            loginBtn.style.height = "auto";
+            loginBtn.style.padding = "8px 16px";
           }
         }
       });
