@@ -369,7 +369,7 @@
         } else {
           showMessage("Signed in successfully! Redirecting...", "success");
           setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "/";
           }, 1500);
         }
       }
@@ -418,7 +418,7 @@
       // Check if already logged in
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session) {
-          window.location.href = "index.html";
+          window.location.href = "/";
         }
       });
     </script>

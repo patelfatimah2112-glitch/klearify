@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Klearify - Learn Anything Your Way</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
       [data-theme="dark"] {
         --bg: #0f0f1a;
@@ -634,6 +635,39 @@
           );
           printWindow.document.close();
         }
+      }
+
+      // Supabase setup
+      var SUPABASE_URL = "https://xfpxgptieddlvtksnhql.supabase.co";
+      var SUPABASE_ANON_KEY = "sb_publishable_ikI0hfoCXfkwweTUTxwsCQ_CrJ_PBt4";
+      var supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY,
+      );
+
+      // Check login status and update navbar
+      supabaseClient.auth.getSession().then(function (result) {
+        var session = result.data.session;
+        var loginBtn = document.getElementById("login-btn");
+        if (loginBtn) {
+          if (session) {
+            var username = session.user.email.split("@")[0];
+            loginBtn.textContent = "👤 " + username;
+            loginBtn.href = "history.html";
+            loginBtn.style.background =
+              "linear-gradient(135deg, #667eea, #764ba2)";
+          } else {
+            loginBtn.textContent = "🔐 Login";
+            loginBtn.href = "login.html";
+          }
+        }
+      });
+
+      // Logout function
+      function logout() {
+        supabaseClient.auth.signOut().then(function () {
+          window.location.reload();
+        });
       }
 
       loadCredits();
