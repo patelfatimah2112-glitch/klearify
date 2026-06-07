@@ -490,9 +490,7 @@
     <nav>
       <div class="logo">✨ Klearify</div>
       <div class="nav-right">
-        <div class="credits-badge">
-          Credits: <span id="credits-display">20</span>
-        </div>
+        <div class="credits-badge" id="credits-display">✨ Unlimited</div>
 
         <div class="profile-wrapper" id="profile-wrapper">
           <a href="login.html" id="login-btn" class="avatar-btn">🔐</a>
@@ -718,7 +716,14 @@
       }
 
       // ===== CREDITS =====
+      // ✅ CREDIT MODE — set to false when you want to enforce paid limits
+      var UNLIMITED_CREDITS = true;
+
       function loadCredits() {
+        if (UNLIMITED_CREDITS) {
+          document.getElementById("credits-display").innerText = "✨ Unlimited";
+          return;
+        }
         var today = new Date().toDateString();
         var savedDate = localStorage.getItem("Klearify-date");
         var savedCredits = localStorage.getItem("Klearify-credits");
@@ -762,6 +767,7 @@
       }
 
       function saveCredits() {
+        if (UNLIMITED_CREDITS) return;
         localStorage.setItem("Klearify-credits", credits.toString());
         document.getElementById("credits-display").innerText = credits;
       }
@@ -780,12 +786,14 @@
           return;
         }
 
-        if (credits <= 0) {
-          document.getElementById("credits-popup").classList.add("show");
-          return;
+        if (!UNLIMITED_CREDITS) {
+          if (credits <= 0) {
+            document.getElementById("credits-popup").classList.add("show");
+            return;
+          }
+          credits--;
+          saveCredits();
         }
-        credits--;
-        saveCredits();
         document.getElementById("loading").style.display = "block";
         document.getElementById("result").style.display = "none";
 
