@@ -12,7 +12,6 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-HB5NMTYTBL");
     </script>
     <meta charset="UTF-8" />
@@ -293,10 +292,10 @@
       var SUPABASE_KEY = "sb_publishable_ikI0hfoCXfkwweTUTxwsCQ_CrJ_PBt4";
       var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-      // If already logged in, redirect to home
+      // ✅ FIX: use index.html instead of "/" for Vercel compatibility
       supabase.auth.getSession().then(function (result) {
         if (result.data.session) {
-          window.location.href = "/";
+          window.location.href = "index.html";
         }
       });
 
@@ -354,20 +353,27 @@
         btn.disabled = true;
         btn.textContent = "Signing in...";
 
-        var { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
-        });
+        try {
+          var { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+          });
 
-        if (error) {
-          showMessage(error.message, "error");
+          if (error) {
+            showMessage(error.message, "error");
+            btn.disabled = false;
+            btn.textContent = "Sign In";
+          } else {
+            showMessage("Signed in successfully! Redirecting...", "success");
+            setTimeout(function () {
+              // ✅ FIX: use index.html instead of "/" for Vercel compatibility
+              window.location.href = "index.html";
+            }, 1500);
+          }
+        } catch (err) {
+          showMessage("Connection error. Please try again.", "error");
           btn.disabled = false;
           btn.textContent = "Sign In";
-        } else {
-          showMessage("Signed in successfully! Redirecting...", "success");
-          setTimeout(function () {
-            window.location.href = "/";
-          }, 1500);
         }
       }
 
@@ -390,23 +396,29 @@
         btn.disabled = true;
         btn.textContent = "Creating account...";
 
-        var { data, error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-          options: {
-            data: { name: name },
-          },
-        });
+        try {
+          var { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: { name: name },
+            },
+          });
 
-        if (error) {
-          showMessage(error.message, "error");
-          btn.disabled = false;
-          btn.textContent = "Create Account";
-        } else {
-          showMessage(
-            "Account created! Please check your email to verify your account.",
-            "success",
-          );
+          if (error) {
+            showMessage(error.message, "error");
+            btn.disabled = false;
+            btn.textContent = "Create Account";
+          } else {
+            showMessage(
+              "Account created! Please check your email to verify your account.",
+              "success",
+            );
+            btn.disabled = false;
+            btn.textContent = "Create Account";
+          }
+        } catch (err) {
+          showMessage("Connection error. Please try again.", "error");
           btn.disabled = false;
           btn.textContent = "Create Account";
         }
