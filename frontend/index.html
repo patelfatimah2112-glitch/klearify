@@ -803,28 +803,64 @@
         document.getElementById("loading").style.display = "block";
         document.getElementById("result").style.display = "none";
 
-        fetch("https://klearify.onrender.com/explain", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            concept: concept,
-            interest: selectedInterest,
-            language: language,
-            level: level,
-          }),
-        })
-          .then(function (res) {
-            return res.json();
+        function postExplain(url) {
+          return fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              concept: concept,
+              interest: selectedInterest,
+              language: language,
+              level: level,
+            }),
+          });
+        }
+
+        var isLocal =
+          window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1";
+        var isFile = window.location.protocol === "file:";
+
+        var primaryUrl =
+          isLocal || isFile
+            ? "http://127.0.0.1:10000/explain"
+            : "https://klearify.onrender.com/explain";
+
+        var fetchPromise = postExplain(primaryUrl);
+
+        if (isFile) {
+          fetchPromise = fetchPromise.catch(function () {
+            return postExplain("https://klearify.onrender.com/explain");
+          });
+        }
+
+        fetchPromise
+          .then(async function (res) {
+            var data = await res.json().catch(function () {
+              return {};
+            });
+            if (!res.ok) {
+              throw new Error(
+                data.error || "Server returned an error (" + res.status + ")",
+              );
+            }
+            return data;
           })
           .then(function (data) {
+            if (!data.explanation) {
+              throw new Error("No explanation returned from server.");
+            }
             document.getElementById("explanation-text").innerText =
               data.explanation;
             document.getElementById("loading").style.display = "none";
             document.getElementById("result").style.display = "block";
             saveToHistory(concept, selectedInterest);
           })
-          .catch(function () {
-            alert("Something went wrong! Make sure backend is running.");
+          .catch(function (err) {
+            alert(
+              "Something went wrong: " +
+                (err.message || "Make sure backend is running."),
+            );
             document.getElementById("loading").style.display = "none";
           });
       }
